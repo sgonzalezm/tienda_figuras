@@ -32,33 +32,23 @@ if (isset($_POST["login_correo"]) && isset($_POST["login_password"])) {
 }
 
 echo "$correo";
-//Consulta para obtener los datos de login
+//Consulta PDO para obtener los datos de login
 
 $stmt = $pdo->prepare("SELECT * FROM clientes WHERE correo = :correo AND password = :password");
 $stmt->bindParam(":correo", $correo, PDO::PARAM_STR);
 $stmt->bindParam(":password", $password, PDO::PARAM_STR);
 $stmt->execute();
+//Validacion si el acceso es correcto
 if ($stmt->rowCount() > 0) {
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $pdo = null;
-    foreach ($result as $row) {
+    $_SESSION["correo"] = $result["correo"]; // Asignacion de la variable de sesion utilizando el correo
+    /*foreach ($result as $row) {
         echo $row["correo"];
-    }
+    }*/
 }else{
     echo "El usuario o contraseña no existe en el sistema";
 }
-
-
-//Validacion si el acceso es correcto
-
-
-//Variables para identificadores de la sesion
-$_SESSION["correo"] = $_REQUEST["login_correo"];
-$_SESSION["nombre"] = $_REQUEST["login_password"];
-
-
-
-
 ?>
     
 </body>
